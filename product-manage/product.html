@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css">
+<script src="https://www.gstatic.com/firebasejs/4.2.0/firebase.js"></script>
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../model/Product.js"></script>
+    <link rel="stylesheet" href="product.css">
+
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-12" style="margin-top: 20px">
+            <!--      NAME-->
+            <div class="input-group mb-3">
+                <input type="text" class="form-control"  id="name" placeholder="Name ..." aria-label="Recipient's username"
+                       aria-describedby="basic-addon2">
+                <div class="input-group-append">
+                    <span class="input-group-text" >Name</span>
+                </div>
+            </div>
+            <!--      END NAME-->
+
+            <!--      PRICE-->
+            <div class="input-group mb-3">
+                <input type="number" class="form-control" placeholder="Price ..." aria-label="Recipient's username"
+                       aria-describedby="basic-addon2" id="price">
+                <div class="input-group-append">
+                    <span class="input-group-text" >Price</span>
+                </div>
+            </div>
+            <!--      END PRICE-->
+
+            <!--      UPLOAD FILE-->
+            <progress value="0" max="100" id="uploader">0%</progress>
+            <input type="file" value="upload" accept=".jpg" id="fileButton">
+            <h1>Hello GFG</h1>
+            <div id="imgDiv"></div>
+            <!--      END UPLOAD-->
+            <button class="btn btn-success" onclick="createProduct()">Create Product</button>
+        </div>
+    </div>
+</div>
+<!--SHOW LIST PRODUCT-->
+<div class="container">
+    <div class="row" id="draw-product">
+<!--        <div class="col">-->
+<!--            <img src="../image/Nami.webp" alt="">-->
+<!--        </div>-->
+<!--        <div class="col">-->
+<!--            <img src="../image/Robin.jpg" alt="">-->
+<!--        </div>-->
+        <div class="col">
+            <img src="../image/Nam.jpg" alt="">
+        </div>
+    </div>
+</div>
+<script>
+    let idUser = parseInt(localStorage.getItem('idKey'));
+    let listProduct = JSON.parse(localStorage.getItem('list_product'))
+    if (listProduct === null) {
+        listProduct = [];
+    }
+
+    function createProduct() {
+        let name = document.getElementById('name').value;
+        let price = +document.getElementById('price').value;
+        let image = getImage();
+        let id = 0;
+        if (listProduct.length === 0) {
+            id = 1;
+        } else {
+            id = listProduct[listProduct.length - 1].id + 1;
+        }
+        let product = new Product(id, name, price, image, idUser);
+        listProduct.push(product);
+        localStorage.removeItem('list_product')
+        localStorage.setItem('list_product', JSON.stringify(listProduct))
+        showListProduct();
+    }
+    function showListProduct() {
+        let drawProduct = '';
+        for (let i = 0; i < listProduct.length; i++) {
+            drawProduct += `
+                <div class="col">
+                    <b>${listProduct[i].name}</b>
+                    <img src="${listProduct[i].image}" alt="">
+                    <p>${listProduct[i].price}</p>
+                </div>
+            `
+        }
+        document.getElementById('draw-product').innerHTML = drawProduct;
+    }
+    showListProduct();
+</script>
+
+</body>
+<script src="../upload_file/upload.js"></script>
+</html>
